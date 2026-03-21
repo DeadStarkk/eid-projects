@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import EnvelopeReveal from './EnvelopeReveal';
 
 function PlayerOverlays({ feedback, showLaylatulQadr, scorePopup }) {

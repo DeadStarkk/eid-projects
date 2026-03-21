@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Gift } from 'lucide-react';
 import { useGameStore } from '../../store/gameStore';
 

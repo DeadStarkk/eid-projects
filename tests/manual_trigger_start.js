@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 const URL = process.env.VITE_SERVER_URL || process.env.APP_URL || 'http://localhost:3000';
-const ADMIN_TOKEN = 'default_admin_123';
+const ADMIN_TOKEN = '123';
 
 const socket = io(URL);
 

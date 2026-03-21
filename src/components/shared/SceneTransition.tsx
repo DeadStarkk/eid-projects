@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 const SceneTransition = ({ status, children }) => {
   const [showSunrise, setShowSunrise] = useState(false);
@@ -24,7 +24,7 @@ const SceneTransition = ({ status, children }) => {
         <AnimatePresence mode="wait">
           <motion.div
             key={status}
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 1, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 1.05, y: -20 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}

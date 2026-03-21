@@ -4,9 +4,15 @@ import { useGameStore } from '../../store/gameStore';
 import ParticleBackground from '../shared/ParticleBackground';
 
 const PREMADE_AVATARS = [
-    '/avatars/avatar-1.webp', '/avatars/avatar-2.webp', '/avatars/avatar-3.webp',
-    '/avatars/avatar-4.webp', '/avatars/avatar-5.webp', '/avatars/avatar-6.webp',
-    '/avatars/avatar-7.webp', '/avatars/avatar-8.webp', '/avatars/avatar-9.webp'
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Felix',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Aneka',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Mimi',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Jack',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Jude',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Aidan',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Sara',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Oliver',
+    'https://api.dicebear.com/7.x/adventurer/svg?seed=Nala'
 ];
 
 function PlayerLogin({ backgroundStyle }) {
@@ -64,6 +70,7 @@ function PlayerLogin({ backgroundStyle }) {
                                         src={url}
                                         alt={`Avatar ${idx + 1}`}
                                         onClick={() => setSelectedAvatar(url)}
+                                        referrerPolicy="no-referrer"
                                         className={`w-full aspect-square rounded-xl cursor-pointer transition-all object-cover ${selectedAvatar === url ? 'border-4 border-gold scale-105 shadow-lg shadow-gold/30' : 'border-2 border-transparent opacity-70 hover:opacity-100'}`}
                                     />
                                 ))}

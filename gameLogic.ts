@@ -93,6 +93,16 @@ export async function getHostSocketId(): Promise<string | null> { return await s
 export async function setHostSocketId(id: string | null) { await store.set('hostSocketId', id); }
 export async function clearSubmissionTimes() { await store.set('submissionTimes', {}); }
 
+export async function handleToggleReady(io: any, socket: any, data: { playerId: string }) {
+    const players = await getPlayers();
+    const playerIndex = players.findIndex(p => p.id === data.playerId);
+    if (playerIndex !== -1) {
+        players[playerIndex].isReady = !players[playerIndex].isReady;
+        await store.set('players', players);
+        await broadcastGameUpdate(io);
+    }
+}
+
 
 // Rate Limiting Helpers
 export const ipRateLimits = new Map();

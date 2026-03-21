@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { HelpCircle, X, Info, ShieldCheck, Zap, AlertTriangle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { GAME_RULES } from '../../constants';
 
 function Faz3aTutorial() {

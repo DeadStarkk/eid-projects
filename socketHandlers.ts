@@ -7,7 +7,7 @@ import {
     resetGameState, resetGameSameLobby, advanceMajlis, kickPlayer,
     handleJoinGame, handleRejoinGame, handleSubmitAnswer, handleNextDay, 
     handleSelectRelative, handleChooseEnvelope, handleConfirmFaz3a, handleCancelFaz3a,
-    handleTriggerHaptic, handleSkipPlayer, handleDisconnect
+    handleTriggerHaptic, handleSkipPlayer, handleDisconnect, handleToggleReady
 } from './gameLogic.js';
 import { store } from './store.js';
 
@@ -54,7 +54,7 @@ export async function registerSocketHandlers(io, socket, defaultQuestions) {
             return;
         }
 
-        const adminToken = process.env.ADMIN_TOKEN || 'default_admin_123';
+        const adminToken = process.env.ADMIN_TOKEN || '123';
         if (token === adminToken) {
             await setHostSocketId(socket.id);
             console.log(`Host claimed by ${socket.id}`);
@@ -107,6 +107,8 @@ export async function registerSocketHandlers(io, socket, defaultQuestions) {
         if (!checkRateLimit(socket.id, socketRateLimits, 5, 1000)) return;
         await handleSubmitAnswer(io, socket, data);
     });
+
+    socket.on('toggle_ready', async (data) => await handleToggleReady(io, socket, data));
 
     socket.on('select_relative', async (data) => await handleSelectRelative(io, socket, data));
     socket.on('choose_envelope', async (data) => await handleChooseEnvelope(io, socket, data));

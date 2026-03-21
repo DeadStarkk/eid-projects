@@ -7,16 +7,16 @@ export const getBackgroundStyle = (status, isPlayer = false) => {
   };
 
   const bgMap = {
-    'waiting': '/ramadan-bg.webp',
-    'day_trivia': '/ramadan-bg.webp',
-    'night_trivia': '/ramadan-night-bg.webp',
-    'fitr_trivia': '/ramadan-night-bg.webp',
-    'majlis': '/majlis-bg.webp',
-    'game_over': '/ramadan-bg.webp',
-    'transition_to_night': '/ramadan-night-bg.webp'
+    'waiting': 'ramadan-bg.webp',
+    'day_trivia': 'ramadan-bg.webp',
+    'night_trivia': 'ramadan-night-bg.webp',
+    'fitr_trivia': 'ramadan-night-bg.webp',
+    'majlis': 'majlis-bg.webp',
+    'game_over': 'ramadan-bg.webp',
+    'transition_to_night': 'ramadan-night-bg.webp'
   };
 
-  const bg = bgMap[status] || '/ramadan-bg.webp';
+  const bg = bgMap[status] || 'ramadan-bg.webp';
   const opacity = isPlayer ? 0.5 : 0.4;
   
   return {

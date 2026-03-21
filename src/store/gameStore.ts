@@ -2,7 +2,16 @@ import { create, StateCreator } from 'zustand';
 import { io, Socket } from 'socket.io-client';
 import { Player, GameState, RelativeData } from '../types.js';
 
-const SOCKET_SERVER_URL = import.meta.env.VITE_SERVER_URL || window.location.origin;
+// Ensure we use the correct origin, and ignore invalid VITE_SERVER_URL values
+const getSocketServerUrl = () => {
+  const envUrl = import.meta.env.VITE_SERVER_URL;
+  if (envUrl && envUrl !== 'default_admin_123') {
+    return envUrl;
+  }
+  return window.location.origin;
+};
+
+const SOCKET_SERVER_URL = getSocketServerUrl();
 
 interface SocketSlice {
   socket: Socket | null;
@@ -44,6 +53,7 @@ interface PlayerSlice {
   setScorePopup: (popup: any) => void;
   joinGame: (name: string, avatar: string) => void;
   submitAnswer: (choice: string) => void;
+  toggleReady: () => void;
 }
 
 interface UiSlice {
@@ -65,15 +75,19 @@ const createSocketSlice: StateCreator<GameStore, [], [], SocketSlice> = (set, ge
     const { socket: existingSocket } = get();
     if (existingSocket) existingSocket.close();
 
+    console.log('Connecting to socket server:', SOCKET_SERVER_URL);
     set({ connectionStatus: 'connecting' });
 
     const newSocket = io(SOCKET_SERVER_URL, {
       reconnectionAttempts: 5,
       reconnectionDelay: 2000,
       timeout: 10000,
+      path: '/socket.io',
+      transports: ['websocket'], // Force websocket to avoid XHR polling issues
     });
 
     newSocket.on('connect', () => {
+      console.log('Socket connected');
       set({ connectionStatus: 'connected' });
       if (!isHost) {
         const savedSessionId = localStorage.getItem('sessionId');
@@ -86,9 +100,18 @@ const createSocketSlice: StateCreator<GameStore, [], [], SocketSlice> = (set, ge
       }
     });
 
-    newSocket.on('disconnect', () => set({ connectionStatus: 'disconnected' }));
-    newSocket.on('connect_error', () => set({ connectionStatus: 'failed' }));
-    newSocket.on('reconnect_failed', () => set({ connectionStatus: 'failed' }));
+    newSocket.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+      set({ connectionStatus: 'disconnected' });
+    });
+    newSocket.on('connect_error', (err) => {
+      console.error('Socket connection error:', err);
+      set({ connectionStatus: 'failed' });
+    });
+    newSocket.on('reconnect_failed', () => {
+      console.error('Socket reconnection failed');
+      set({ connectionStatus: 'failed' });
+    });
 
     newSocket.on('game_update', (data: any) => {
       const currentPlayer = get().player;
@@ -276,6 +299,13 @@ const createPlayerSlice: StateCreator<GameStore, [], [], PlayerSlice> = (set, ge
   setShowMiniLeaderboard: (show) => set({ showMiniLeaderboard: show }),
   setEnvelopeReveal: (reveal) => set({ envelopeReveal: reveal }),
   setScorePopup: (popup) => set({ scorePopup: popup }),
+
+  toggleReady: () => {
+    const { socket, player } = get();
+    if (socket && player) {
+      socket.emit('toggle_ready', { playerId: player.id });
+    }
+  },
 
   joinGame: (name, avatar) => {
     const { socket } = get();

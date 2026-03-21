@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 function CalligraphySpeechBubble({ message, isVisible, position = 'top' }) {
     if (!message) return null;
