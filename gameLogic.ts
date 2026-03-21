@@ -243,6 +243,11 @@ export async function handleSubmitAnswer(io, socket, { playerId, choice }) {
 export async function handleNextDay(io, socket, { day }, defaultQuestions) {
     const gameState = await getGameState();
     
+    // Initialize usedQuestionIds if missing
+    if (!gameState.usedQuestionIds) {
+        gameState.usedQuestionIds = [];
+    }
+
     // Idempotency check: don't process same day twice unless game was waiting or over
     if (gameState.currentDay === day && !['waiting', 'game_over'].includes(gameState.status)) {
         return;
@@ -250,12 +255,28 @@ export async function handleNextDay(io, socket, { day }, defaultQuestions) {
 
     stopTimer();
     gameState.currentDay = day;
-    gameState.currentQuestion = defaultQuestions[day] || null;
+    
+    // Pick next question in order
+    const allQuestionIds = Object.keys(defaultQuestions).map(Number).sort((a, b) => a - b);
+    
+    // Find the next question ID that hasn't been used, or restart if all used
+    let nextQuestionId = allQuestionIds.find(id => !gameState.usedQuestionIds.includes(id));
+    
+    if (nextQuestionId === undefined) {
+        gameState.usedQuestionIds = [];
+        nextQuestionId = allQuestionIds[0];
+    }
+    
+    gameState.currentQuestion = defaultQuestions[nextQuestionId];
+    gameState.usedQuestionIds.push(nextQuestionId);
+
     gameState.isLocked = false;
     gameState.answeredPlayers = [];
     gameState.playerChoices = {};
     await clearSubmissionTimes();
     gameState.timeLeft = GAME_RULES.TRIVIA_DURATION_SEC;
+    
+    await store.set('gameState', gameState);
     
     const players = await getPlayers();
     if (day === 15) {

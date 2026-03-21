@@ -84,7 +84,7 @@ export async function registerSocketHandlers(io, socket, defaultQuestions) {
     });
 
     socket.on('start_game', hostOnly(async () => {
-        await store.update('gameState', gs => ({ ...gs, status: 'day_trivia', currentDay: 1 }));
+        await store.update('gameState', gs => ({ ...gs, status: 'day_trivia', currentDay: 1, usedQuestionIds: [] }));
         await startTriviaTimer(io);
         await broadcastGameUpdate(io);
         console.log('Game started');

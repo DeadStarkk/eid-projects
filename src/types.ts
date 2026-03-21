@@ -46,6 +46,7 @@ export interface GameState {
   status: GameStatus;
   currentDay: number;
   currentQuestion: Question | null;
+  usedQuestionIds: number[];
   activePlayerIndex: number;
   currentRelativeIndex: number;
   selectedRelativeIndex: number | null;
